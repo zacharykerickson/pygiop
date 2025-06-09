@@ -14,6 +14,9 @@
 # Lachlan McKinna, NASA GSFC
 # July, 2014
 #
+# Zachary Erickson, NOAA PMEL
+# June, 2025 - added PACE OCI algorithm
+#
 #*******************************************************************************
 # Import python modules
 import numpy as np;
@@ -71,7 +74,8 @@ def getOC(**kwargs):
     (-1.1358,-2.1146,1.6474,-1.1428,-0.6190),\   # KD2C      # CZCS operational Kd
     ( 0.2228,-2.4683,1.5867,-0.4275,-0.7768),\   # OC3V      # VIIRS operational Chl
     ( 0.2230,-2.1807,1.4434,-3.1709, 0.5863),\   # OC2V      # VIIRS 2 band Chl
-    (-0.8730,-1.8912,1.8021,-2.3865,-1.0453)));    # KD2V      # VIIRS operational Kd
+    (-0.8730,-1.8912,1.8021,-2.3865,-1.0453), \  # KD2V      # VIIRS operational Kd
+    ( 0.32814,-3.20725,3.22969, -1.36769, -0.81739)); # PACE # PACE OCI Chl
     '''
     c = np.array(((0.3272,-2.9940,2.7218,-1.2259,-0.5683),\
         (0.3255,-2.7677,2.4409,-1.1288,-0.4990),\
@@ -93,7 +97,8 @@ def getOC(**kwargs):
         (-1.1358,-2.1146,1.6474,-1.1428,-0.6190),\
         ( 0.2228,-2.4683,1.5867,-0.4275,-0.7768),\
         ( 0.2230,-2.1807,1.4434,-3.1709, 0.5863),\
-        (-0.8730,-1.8912,1.8021,-2.3865,-1.0453)));
+        (-0.8730,-1.8912,1.8021,-2.3865,-1.0453),\
+        ( 0.32814, -3.20725, 3.22969, -1.36769, -0.81739)));
     #
     #slect coefficients and generate maximum band ratio
     #
@@ -192,7 +197,10 @@ def getOC(**kwargs):
     if type == 'oc4':
         a = c[0,:];
         r = np.log10(np.amax([r1,r2,r3]) / r4);
-        ##
+    if type == 'pace':
+        a = c[21,:];
+        r = np.log10(np.amax([r1, r2, r3]) / r4);
+
     ##
     #calculate modeled parameter
     oc = np.copy(10.**(a[0] + a[1]*r + a[2]*r**2 + a[3]*r**3 + a[4]*r**4));
