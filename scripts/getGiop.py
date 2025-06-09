@@ -58,6 +58,14 @@ def giop(lam,Rrs,covRrs,
     else:
         g0,g1 = fq;
 
+    # check wavelengths in correct range
+    if np.any(lam<400) or np.any(lam>700):
+        print('-W- wavelengths input beyond allowable threshold (400-700 nm). Curtailing to only wavelengths within this allowable range.')
+        useable_inds = (lam>=400) & (lam<=700)
+        lam = lam[useable_inds]
+        Rrs = Rrs[useable_inds]
+        covRrs = covRrs[useable_inds][:,useable_inds]
+
     #----
 
     #--------------------------
